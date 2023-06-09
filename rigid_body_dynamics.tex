@@ -1,0 +1,173 @@
+\section{Rigid Body Dynamics}
+
+\subsection{Newton-Euler Dynamics}
+Here I should add at least book equation (7.90) and (7.93) and explain where the difference comes from in relation to linear acceleration and derivative rules. 
+
+
+Solving a Newton-Euler problem:
+\begin{enumerate}
+    \item Point A is CG or fixed
+    \begin{itemize}
+        \item $\sum \vec{F}=m\vec{a}$
+        \item $\sum\vec{T}_{A}=J_A\vec{\dot{\omega}}+\vec{\omega}\times J_A\vec{\omega}$
+    \end{itemize}
+	  
+    \item Point A is arbitrary
+    \begin{itemize}
+        \item $\sum \vec{F}=m\vec{a}_{CG}$
+        \item $\sum\vec{T}_A=J_{CG}\vec{\dot{\omega}}+\vec{\omega}\times J_{CG}\vec{\omega}+\vec{r}_{CG/A}\times m\vec{a}_{CG}$
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Newton-Euler State Space}
+
+The state space for Netwon-Euler generally takes the form,
+
+\begin{equation}
+    \begin{bmatrix}
+        \mathbf{F} \\ \mathbf{\tau}
+    \end{bmatrix} = \begin{bmatrix}
+        m\mathbf{I_3} & 0
+        \\
+        0 & \mathbf{J_{cm}}
+    \end{bmatrix} \begin{bmatrix}
+        \mathbf{a_{cm}} \\ \mathbf{\alpha}
+    \end{bmatrix} + \begin{bmatrix}
+        0 \\ \omega\times\mathbf{J_{cm}}\omega
+    \end{bmatrix}
+\end{equation}
+
+Accounting for that the classic Newton 2nd law equation appears, there is also a term which originates from the definition of torque as function of angular momentum $h$,
+
+\begin{align}
+    \begin{split}
+        h_{b/c} &= J_{b/c} \cdot \omega_{ib}
+        \\
+        \tau_{bc} &= \frac{^id}{dt} h_{b/c}
+        \\
+        &= \frac{^id}{dt}(J_{b/c} \cdot \omega_{ib}) = \frac{^bd}{dt} (J_{b/c} \cdot \omega_{ib}) + \omega_{ib} \times (J_{b/c} \cdot \omega_{ib})
+        \\
+        &= J_{b/c} \cdot \alpha_{ib} + \omega_{ib} \times (J_{b/c} \cdot \omega_{ib})
+    \end{split}
+\end{align}
+
+The equation utilizes Equation \eqref{eq:reference_frame_derivative} as we want the equation to be with respect to the body.
+
+\subsection{Linear momentum}
+$$
+\begin{aligned}
+\vec{p}&=m\vec{v}\\
+\vec{\dot{p}}&=m\vec{a}=\sum_i\vec{F}_i
+\end{aligned}
+$$
+\subsection{Angular momentum}
+$$
+\begin{aligned}
+\vec{h}_c&= J_c\vec{\omega}\\
+\vec{\dot{h}}_c&= J\frac{d}{dt}(\vec{\omega})+\vec{\omega}\times J\vec{\omega}=\sum_i\vec{T}_{c_i}
+\end{aligned}
+$$
+\subsection{Mass center}
+The position $\vec{r_c}$ of the center of mass of a rigid body b is defined by
+
+$$
+\vec{r}_c=\frac{1}{m}\int_b \vec{r}_p dm
+$$
+where $m$ is the mass and $\vec{r}_p$ is the position of the mass element $dm$ which is fixed in frame b.
+\subsection{Parallel-Axis Theorem}
+
+\subsubsection{Inertia matrix and its elements}
+
+The matrix is given,
+
+\begin{align}
+    \begin{split}
+        \Vec{h}_c &= J_c^b \omega^b
+        \\
+        J_c &= \begin{bmatrix}
+            J_{xx} & -J_{xy} & -J_{xz}
+            \\
+            -J_{xy} & J_{yy} & -J_{yz}
+            \\
+            -J_{xz} & -J_{yz} & J_{zz}
+        \end{bmatrix}
+    \end{split}
+\end{align}
+
+the moments of inerta,
+
+\begin{align}
+    \begin{split}
+        J_{xx} &= \iiint (y^2 + z^2)\, dm
+        \\
+        J_{yy} &= \iiint (x^2 + z^2)\, dm
+        \\
+        J_{zz} &= \iiint (x^2 + y^2)\, dm
+    \end{split}
+\end{align}
+
+the products of inertia,
+
+\begin{align}
+    \begin{split}
+        J_{xy} &= \iiint xy \, dm
+        \\
+        J_{yz} &= \iiint yz \, dm
+        \\
+        J_{xz} &= \iiint xz \, dm
+    \end{split}
+\end{align}
+
+\subsubsection{Inertia at arbitrary point}
+
+For an object with at the point $x,y,z$ with a known inertia, a point $x', y', z'$ has the following inertia,
+
+\begin{align}
+    \begin{split}
+        J_{x'x'} &= J_{xx} + m((y' - y)^2 + (z' - z)^2)
+        \\
+        J_{y'y'} &= J_{yy} + m((x' - x)^2 + (z' - z)^2)
+        \\
+        J_{z'z'} &= J_{xx} + m((x' - x)^2 + (y' - y)^2)
+    \end{split}
+\end{align}
+
+Note: This is given that we are calculating both points in the same frame.
+
+\subsubsection{Change in center of mass}
+
+The parallel axis theorem is given by the following.
+
+\begin{equation}
+\label{eq:p_axis}
+    M^b_{b/o}=M^b_{b/c}-m(r^b_g)^\times(r^b_g)^\times
+\end{equation}
+
+Where $M^b_{b/o}$ is the moment of inertia (MOI) about the new point, o, $M^b_{b/c}$ is MOI about centre of mass, c, and $r^b_g$ is the vector from o to c. 
+
+In some cases you are given an existing MOI $M^b_{b/c}$ which is the MOI about the current centre of mass. You are then told to add a new mass, and calculate the new MOI about the new centre of mass, $M^{'b}_{b/c'}$. This is done using parallel-axis theorem. 
+
+The standard procedure is the following: 
+\begin{enumerate}
+    \item Calculate what will be the new centre of mass, $r^b_{c'}$,  using \newline $r^b_{c'}= \frac{1}{M}\sum\limits_{i} m_ir^b_i$,
+    where $M=\sum\limits_{i} m_i$. Treat the old mass belonging to the old $M^b_{b/c}$ as a point mass at $r^b_{c}$.
+    \item You now need to calculate the old MOI's contribution to the new MOI. You do this using the parallel axis theorem, where $o$ is the new center of mass, and $c$ is the old one. $r^b_g = r^b_{oc} = r^b_{c'c}$. 
+    \item You now have $M^b_{b/o} = M^b_{b/c'}$, the contribution of the old mass. This must be summed with the contribution of the new masses $m_i$. Note the minus in the formula, it is there due to algebraic tricks. The formula is taken from equation \ref{eq:MOI}.
+    \item $M^{'b}_{b/c'} = M^b_{b/c'} + \sum\limits_{i} -m_i(r^b_{c'i})^\times(r^b_{c'i})^\times$
+\end{enumerate}
+
+Notation \\
+	- Old cg: c \\
+	- New cg: o \\
+	- Original object: mass and symbol $m$ \\
+	- Added (point) mass: mass and symbol $m'$ \\
+1. Calculate new inertia matrix around new cg for original object \\
+	- Define vector $r$ from new cg to old cg: $r = - \frac{m'}{m' + m} \cdot p$ \\
+		- $p:$ vector from old cg to added point mass \\
+	- PAT: $J_{m/o} = J_{m/c}-mr^{\times}r^{\times} = J_{m/c}+ m(rr^TI-rr^T)$  \\
+		- $J_{m/o}:$ inertia matrix for mass m around new cg c \\
+2. Calculate inertia around new cg for added point mass \\
+	- Define vector from added mass $m'$ to new cg: $s = \frac{m}{m+m'} \cdot p$ \\
+	- PAT: $J_{m'/o} =m'\cdot s^{\times} s^{\times}$ \\
+3. Add inertia to gain the total inertia for the object with added point mass: \\
+	- $J_{m+m'/o}=J_{m/o}-m'\cdot s^{\times} s^{\times}= J_{m/c}+ m(rr^TI-rr^T) + m'(ss^TI-ss^T)$ \\

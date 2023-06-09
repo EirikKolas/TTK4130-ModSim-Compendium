@@ -1,0 +1,57 @@
+\documentclass[11pt, a4paper, USenglish]{article} % change ``USenglish'' to ``norsk'' if applicable.
+
+\usepackage{graphicx} % Provides the \includegraphics command.
+\usepackage{amsmath}
+\usepackage{parskip} % Provides newline instead of indent on new paragraph
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{float}
+
+
+
+\usepackage{xcolor}
+\usepackage{hyperref} % Provides clickable links. Always load last, but before cleveref.
+\hypersetup{ hidelinks
+}
+
+
+
+\begin{document}
+
+% Titlepage
+\title{ModSim Deledokument}
+\author{Superkoselig kybgruppe YEEET!\\\\
+Eirik Kolås, Johannes Ihle, \\Ovar Skjevdal, Christian Le, \\
+Hans Petter Vatne, Lena Nilsson, \\
+Ronja Kræmer, Randi Fjelltun Stensvand, \\
+Sigurd von Brandis}
+
+\date{Mai, 2023}
+\begin{titlepage}
+    \maketitle
+    \thispagestyle{empty}
+\end{titlepage}
+
+% TOC
+\newpage
+\tableofcontents
+\thispagestyle{empty} % Avoid page numbering on the table of contents.
+
+
+% Main content
+\newpage
+\setcounter{page}{1}
+\include{frame_transformations}
+\include{rotations}
+\include{kinematics}
+\include{rigid_body_dynamics}
+\include{lagrange_mechanics}
+\include{ODEs}
+\include{DAEs}
+\include{integration_methods}
+\include{system_modeling}
+\include{mischellaneous}
+
+\newpage
+\include{appendix}
+\end{document}

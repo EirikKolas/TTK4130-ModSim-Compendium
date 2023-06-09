@@ -1,0 +1,287 @@
+\section{Integration methods (Runge Kutta Methods)}
+\subsection{Butcher table}
+A table describing general RK-methods, s referring to the number of stages used in the method
+$$
+\begin{array}{c|cccc}
+c_1 & a_{11} & a_{12} & \cdots & a_{1s} \\
+c_2 & a_{21} & a_{22} & \cdots & a_{2s} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+c_s & a_{s1} & a_{s2} & \cdots & a_{ss} \\
+\hline
+& b_1 & b_2 & \cdots & b_s \\
+\end{array}
+$$
+The A-and c-matrices describe how to compute the stage derivatives $K_1,...,K_s$. Each stage derivative is an approximation of $f(t,x)$
+
+\begin{equation*}
+    \begin{split}
+        K_1 &= f(t_n + \Delta tc_1, x_n + \Delta t \sum_{j=1}^{s} a_{1j} K_j) \\
+        K_2 &= f(t_n + \Delta tc_2, x_n + \Delta t \sum_{j=1}^{s} a_{2j} K_j) \\
+        \vdots \\
+        K_s &= f(t_n + \Delta tc_s, x_n + \Delta t \sum_{j=1}^{s} a_{sj} K_j)
+    \end{split}
+\end{equation*}
+
+Elements in b-matrix are used to compute the value at the next time step:
+
+\begin{equation*}
+    x_{n+1} = x_n + \Delta t\sum_{i=1}^{s}b_iK_i
+\end{equation*}
+Properties of the Butcher table:
+\begin{itemize}
+    \item The sum of the elements in a row of A equals the value at the corresponding row of c.
+    \item The sum of the elements in b always equals to 1.
+\end{itemize}
+
+\subsection{Explicit methods}
+Any explicit RK method exhibits a butcher table with a lower-triangular A-matrix, i.e. the diagonal elements, and the elements above them equal to zero. In addition to this, the first element of the c-matrix is always zero: 
+$$
+\begin{array}{c|cccc}
+0 & 0 & 0 & \cdots & 0 \\
+c_2 & a_{21} & 0 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+c_s & a_{s1} & a_{s2} & \cdots & 0 \\
+\hline
+& b_1 & b_2 & \cdots & b_s \\
+\end{array}
+$$
+
+Explicit RK schemes yield simple computer codes and can be advantageous for “small” CPU
+architectures. They are best suited for explicit ODEs, when they are not stiff. They typically have a lower computational complexity per integration step than implicit methods because they (normally) don’t require using a Newton iteration. Explicit RK schemes perform often poorly on stiff systems, because their region of stability is small, and very small time steps are required
+to avoid instability.
+
+\subsubsection{Explicit Euler Method}
+Also called Forward Euler
+$$
+x_{n+1}=x_n+\Delta tf(t_n,x_n)
+$$
+$$
+\begin{array}{c|c}
+0 & 0 \\\hline & 1
+\end{array}
+$$
+\subsubsection{Heun's Method}
+$$
+\begin{array}{c|cc}
+0 & 0 \\ 1 & 1 & 0 \\\hline & \frac{1}{2} & \frac{1}{2}
+\end{array}
+$$
+\subsubsection{Explicit midpoint Method}
+$$
+\begin{array}{c|cc}
+0 & 0 \\ \frac{1}{2} & \frac{1}{2} & 0 \\\hline & 0 & 1
+\end{array}
+$$
+
+
+
+\subsection{Implicit methods}
+In implicit methods, there are no rules on what elements in a butcher table that can be non-zero.
+Unlike ERKs, IRKs can be A-stable and L-stable depending on what happens when $z$ becomes large in the stability function $R(z)$
+
+Implicit RK methods can be solved by using Newtons method on 
+$$
+0 =
+\underbrace{\begin{bmatrix}
+k_1 \\ k_2 \\ \vdots \\ k_s
+\end{bmatrix}}_K -
+\begin{bmatrix}
+f(t_n+c_1\Delta t,x_n+a_1K) \\ f(t_n+c_1\Delta t,x_n+a_2K) \\ \vdots \\ f(t_n+c_1\Delta t,x_n+a_sK)
+\end{bmatrix}
+$$
+Used when one wants to treat implicit ODEs or DAEs, which often require solving implicit equations. Implicit RK methods can be stable regardless of the stiffness of the differential
+equation, hence they do not require very small steps to achieve the stability of the integration
+and are therefore ideal for treating stiff systems.
+
+\subsection{Newtons method}
+Newtons method aims at solving a set of equations: $\boldsymbol{\phi}(x,y)=0$, and allows for computing x as a function of y numerically by finding roots of the function $\boldsymbol{\phi}(x,y)$.  \\
+Eg. for the implicit Euler method, we get the function $\boldsymbol{\phi}(x_n, x_{n+1}, u_n, u_{n+1} = x_n + \Delta t f(x_{n+1}, u_{n+1} - x_{n+1} = 0$ \\
+The Newton step is defined accordingly: $\Delta x = - (\frac{\partial \boldsymbol{\phi}(x,y)}{\partial x})^{-1} \boldsymbol{\phi}(x,y)$, where x corresponds to $x_{n+1}$ for an implicit method. \\
+The algorithm can use a full Newton step or a reduced one, both updating the guess of x according to $x \leftarrow x + t \Delta x$, where a full Newton step is when $t=1$. For a reduced Newton step we use $t<1$. \\
+
+
+
+\subsubsection{Implicit Euler Method}
+Also called Backward Euler
+$$
+x_{n+1}=x_n+\Delta tf(t_{n+1}, x_{n+1})
+$$
+$$
+\begin{array}{c|c}
+1 & 1 \\\hline &1
+\end{array}
+$$
+A-stable and L-stable. Order is $o=1$, same as Explicit Euler. 
+ 
+Stability region $\frac{1}{1-z}$
+
+\subsubsection{Implicit Midpoint Method}
+$$
+x_{n+1}=x_n+\Delta tf(t_n+  \frac{1}{2}\Delta t, \frac{1}{2}(x_n+x_{n+1}))
+$$
+$$
+\begin{array}{c|c}
+\frac{1}{2} & \frac{1}{2} \\\hline &1
+\end{array}
+$$
+A-stable and not L-stable.\\
+A Gauss-Legendre method
+
+\subsection{Collocation methods}
+Collocation methods are methods for creating IRK methods that achieves high order at low number of stages,
+
+$$
+\dot x(t_n+\tau\cdot\Delta t)=p(\tau,K)=\sum_{i=1}^sK_il_i(\tau)
+$$
+with $\tau\in[0,1]$
+
+The method becomes a polynomial approximation to the ODE to be solved.
+
+Collocation points $\{\tau_i,K_i\}, i=1,\dots,s$. We want that
+$$
+p(\tau_i,K)=K_i
+$$
+The Lagrange interpolation polynomial is used to match the "original" curve of ODE at specific points of time, given by the equation below,
+$$
+p(\tau, K) =\sum_{i=1}^sK_il_i(\tau)
+$$
+On the collocation points $\tau$:
+\begin{equation*}
+l_i(\tau_j)=\left\{\begin{split}
+1,i=j\\0,i\ne j
+\end{split}\right.
+\end{equation*}
+
+since then
+$$
+p(\tau_i,K)=K_i
+$$
+(outside the collocation points we don't know the values).
+
+The polynomial that achieves the requirement of $l_i(\tau_j)$ is the following,
+$$ \label{eq:l_i_formula}
+l_i(\tau)= \prod_{j\ne i} \frac{\tau-\tau_j}{\tau_i-\tau_j}
+$$
+
+\subsubsection{Gauss-Legendre methods}
+For a given number of stages $s$, the collocation points $\tau_i$ are chosen based on the roots of,
+\begin{equation}\label{eq:Gauss-Legendre}
+P_s(\tau) = \frac{1}{s!} \frac{d^s}{d\tau^s}(\tau^2-\tau)^s
+\end{equation}
+E.g. the points $\tau_i$ such that $P_s(\tau_i)=0$. 
+
+\textbf{Properties:}\\
+\begin{itemize}
+    \item Order $o=2s$
+    \item A-stable
+    \item \textbf{Not} L-stable
+\end{itemize}
+
+\subsubsection{Building a collocation method}
+\begin{enumerate}
+    \item Select number of stages $s$
+    \item Choose the collocation points $\tau_1,\dots,\tau_s$. In the Gauss-Legendre method, these are chosen from \autoref{eq:Gauss-Legendre}
+    \item Build $l_1(\tau),\dots,l_s(\tau)$ according to 
+    $$ \label{eq:l_i_formula}
+    l_i(\tau)= \prod_{j\ne i} \frac{\tau-\tau_j}{\tau_i-\tau_j}
+    $$
+    \item Integrate all $l_i(\tau)$ to get $L_i(\tau)$
+    $$
+    L_i=\int_0^\tau l_i(\xi)d\xi
+    $$
+    \item $A$, $b$ and $c$ can be found from the interpolated model:
+    $$
+    \begin{aligned}
+        x_{n+1} &= x_n + \Delta t\sum_{i=1}^s k_iL_i(1)\\
+        k_j &= f(t_n + \tau_j\Delta t, x_n + \Delta t \sum_{i=1}^s k_iL_i(\tau_j))\\
+        a_{i,j} &= L_j(\tau_i)\\
+        b_i &= L_i(1)\\
+        c_i &= \tau_i
+    \end{aligned}
+    $$
+    This gives the Butcher table:
+    $$
+    \begin{array}{c|cccc}
+        \tau_1 & L_1(\tau_1) & L_2(\tau_1) & \cdots & L_s(\tau_1) \\
+        \tau_2 & L_1(\tau_2) & L_2(\tau_2) & \cdots & L_s(\tau_2) \\
+        \vdots & \vdots      & \vdots      & \ddots & \vdots \\
+        \tau_s & L_1(\tau_s) & L_2(\tau_s) & \cdots & L_s(\tau_s) \\
+        \hline
+               & L_1(1)      & L_2(1)      & \cdots & L_s(1)
+    \end{array}
+    $$
+\end{enumerate}
+
+\subsection{Order of integration methods}
+
+The total error of a method, $||x_N - x(T)||$, the order, o, and the one step error, $\epsilon$, are defined as follows. Note how the total error is the sum of the N one step errors. An example: if $\epsilon=\Delta t^3$ then you get $o=2$ giving order 2.
+
+\begin{equation}
+\begin{aligned}
+    ||x_N - x(T)|| = N\epsilon = \frac{T}{\Delta t}\epsilon \leq c\Delta t^o\\
+    ||x_k-x(t_k)|| = \epsilon
+\end{aligned}
+\end{equation}
+
+ERK methods typically have order o=s up to s$>$4, after that it dabs off. IRK methods can achieve orders as high as o=2s (Gauss-Legendre). 
+
+\subsection{Stability of integration methods}
+Consider the stable ODE $\dot{x} = \lambda x$, and define $z = \lambda \Delta t$.
+The stability function of a Runge-Kutta method is then given by
+
+\begin{equation}
+    R(z) = \frac{det(I-z(\boldsymbol{A}-\boldsymbol{1}\boldsymbol{b}^T))}{det(I-z\boldsymbol{A})}
+\end{equation}
+
+where $\boldsymbol{1}$ = $\begin{bmatrix} 1\\\vdots\\1\end{bmatrix}$ and $\boldsymbol{A}$ and $\boldsymbol{b}$ are from the method's butcher tableau. 
+
+The integration method is stable when $||R(z)|| \leq 1$
+
+
+\subsubsection{A-stability}
+\begin{itemize}
+    \item Stability region is entire $\mathbb{C}^{-}$ ($||R(z)||\le 1$ for all $z\in\mathbb C^-$)
+    \item i.e. step size can be as big as you want and you still have stability. Can choose step size based on error tolerance rather than stability requirements. 
+    \item Only IRK methods can be A-stable
+\end{itemize}
+
+\subsubsection{L-stability}
+
+An RK method is L-stable if it is A-stable and in addition $|R(i\omega h)| \rightarrow 0$ as $\omega \rightarrow \pm \infty$
+
+L-stable methods dampen oscillations. I.e. if you have a system without energy dissipation, an L-stable method will add energy dissipation, if that is bad then use something else.
+
+\subsection{Computational complexity}
+The computational cost per unit of simulation time is at least:
+
+\textbf{ERK:} 
+$$
+\frac{n}{T} \geq s \left(\frac{Tol}{c}\right)^{-1/o}
+$$
+where $n$ is the \# of evaluation of f, $T$ is integration interval, $s$ number of stages, $Tol$ error tollerance, $c$ some constant and $o$ is order of RK method. 
+
+\textbf{IRK:} 
+$$
+\frac{C}{T}\geq \mathcal{O}(\left(\frac{Tol}{c}\right)^{-1/o} m n^3 s^3)
+$$
+where $C$ is the complexity per time step, $n$ is state size, $m$ is \# newton iterations per time step and the other variables are the same as above.  
+
+\subsubsection{Adaptive integrator}
+
+An adaptive integrator makes use of two methods which has order $p$ and $p+1$, estimating $x_{n+1}$ and $\Hat{x}_{n+1}$. Local error and tolerance is approximated by,
+
+\begin{align}
+    \begin{split}
+        \epsilon_{n+1} &= |x_{n+1} - \Hat{x}_{n+1}| \approx \mathbb{O}(\Delta t^{p+1}) - \mathbb{O}(\Delta t^{p+2}) \approx C \cdot h^{p+1} \Rightarrow C = \frac{\epsilon_{n+1}}{h^{p+1}}
+        \\
+        e_\text{tol} &= C \cdot h_\text{new}^{p+1}
+        \\
+        h_\text{new} &= (\frac{e_\text{tol}}{C})^{\frac{1}{p+1}}
+        \\
+        &= \underline{\underline{h(\frac{e_\text{tol}}{\epsilon_{n+1}})^{\frac{1}{p+1}}}}
+    \end{split}
+\end{align}
+
+this principle applies for all RK methods.
+
+

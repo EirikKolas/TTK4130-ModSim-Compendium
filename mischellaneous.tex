@@ -1,0 +1,79 @@
+\section{Miscellaneous}
+
+This section contained about subjects that has \textbf{not} been covered by this year's lectures but have appeared in former exams. The year of exam has also been denoted to indicate possibility for irrelevance. Those that are not denoted has appeared several times.
+
+\subsection{Sign function}
+
+The function $f(x) = \text{sign}(x)$ has the following definition,
+
+\begin{equation}
+    f(x) = \begin{cases} -1 & x < 0 \\
+0 & x = 0 \\
+1 & x > 0 
+\end{cases}
+\end{equation}
+
+\subsection{Guard conditions (E2022)}
+
+The general form for expressing guard conditions between an event $A$ to event $B$ is the following,
+
+\begin{equation*}
+    G(A,B) = \{\text{value condition}, \; \text{direction condition}\}
+\end{equation*}
+
+The value condition is an equality condition which checks if a certain value has reached a threshold, typically if a state has a certain value. 
+The direction condition is an inequality condition which checks if the change in value is in the wanted direction, typically if derivative is positive or negative.
+
+Guard conditions can also be expressed as Matlab event functions, which returns the following,
+
+\begin{align*}
+    &\texttt{function [value, direction] = EventFcn(t, x)}
+    \\
+    &\quad \texttt{value = x - threshold}
+    \\
+    &\quad \texttt{direction = \{-1, 1\}}
+\end{align*}
+
+Value of direction is chosen based on which direction of growth of $x$ we are guarding for, negative or positive.
+
+\subsection{Control volume}
+
+Control volumes are the "preserved" parts in balance equations such as mass, momentum, energy etc.
+
+\subsubsection{Material Derivative}
+$\frac{D}{Dt}$, the material derivative, is defined,
+
+\begin{equation}
+    \frac{Dy}{Dt} \equiv \frac{\partial y}{\partial t} + \underbrace{f}_\text{flow} \nabla y
+\end{equation} \text{(Extracted from wikipedia)}
+
+What flow is, depends on the application. In mechanics, it is velocity etc.
+
+The practical with this derivative, is that it accounts for the change in $y$ with respect to time and additionally the change of $y$ by its own variables.
+Example, we want to observe how a particle moves inside a fluid. The particle has its own velocity and additionally changes its position and velocity with the changes of the fluid.
+
+\subsection{Moment of Control Volume}
+
+The momentum of control volume has the following expression,
+
+\begin{equation}
+    \iiint_V \rho \Vec{v} \, dV
+\end{equation}
+
+Any change in momentum can be expressed as,
+
+\begin{equation}
+    \underbrace{\frac{d}{dt}\iiint_{V_c} \rho \Vec{v} \, dV}_\text{Change in moment of control volume} = \underbrace{\frac{D}{Dt}\iiint_{V_c} \rho \Vec{v} \, dV}_\text{Additive moment from applied force} - \underbrace{\iint_{\partial V_c} \rho \Vec{v}(\Vec{v} - \Vec{v}_c)\cdot\Vec{n} \, dA}_\text{Moment of "escaping" volume}
+\end{equation}
+    
+$\Vec{v}_c$ is the velocity of the surface $\partial V_c$ which is the area of the surface where the "escaping" momentum occurs. Where $\Vec{n}$ is the normal unit vector of $\partial V_c$. More on page 425 in MODSIM book.
+
+Example: A hot air balloon which becomes smaller has air that escapes the bottom "hole", which has a certain surface area. If the ballon is moving uppards, $v_c$ is this velocity and needs to be subtracted to calculate the escaping momentum relatively to the moving balloon.
+
+\textbf{Mass of control volume} is just the above formula divided by $\Vec{v}$.
+
+
+\subsection{Stability of nonlinear systems (E2021)}
+
+When a linearized version of a nonlinear system have eigenvalues corresponding to a \textbf{marginally stable} system, it \textbf{cannot} be interpreted as stable.
+\textbf{Buzzword}: Intermediate axis theorem

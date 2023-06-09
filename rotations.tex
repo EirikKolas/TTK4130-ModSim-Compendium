@@ -1,0 +1,99 @@
+\section{Rotations}
+\subsection{Rotation Matrix}
+The rotation matrix $\mathbf{R}_b^a$ from $a$ to $b$ has two interpretations:
+
+1. Let the vector $\vec{v}$ have coordinate vector $v^b$ in ref. frame $b$ and coordinate vector $v^a$ in ref. frame $a$. Then the rotation matrix $\mathbf R_b^a$ transforms the coordinate vector in $b$ to the coordinate vector in $a$ according to
+$$
+v^a=R_b^a v^b
+$$
+In this equation $\mathbf{R}_b^a$ acts as a coordinate transformation matrix
+
+2. The vector $\vec{p}$ with coordinate vector $\vec{p}$ in ref. frame $a$ is rotated to the vector $\vec{q}$ in \textit{same frame} with coordinate vector $q^a=p^b$ by
+$$
+q^a=\mathbf{R}_b^a p^a
+$$
+In this equation $\mathbf R_b^a$ acts as a rotation matrix.
+
+Basically, the difference is what we interpret as the rotating object. In a transformation, the reference frame "rotates" about the vector, such that the same vector is expressed differently in another frame. In a rotation, the vector itself rotates in a reference frame, changing \textit{that} vector's value in the same frame.
+
+\textbf{Properties:}
+\begin{itemize}
+    \item
+    $$
+    v^b=R^b_av^a=R^b_aR^a_bv^b
+    $$
+    \item Inverting the rotation matrix swaps the direction
+    $$
+    R_a^b=(R_b^a)^{-1}
+    $$
+    \item Transposing the rotation matrix swaps the direction
+    $$
+    R_a^b=(R_b^a)^T
+    $$
+    \item The two statements above give that all rotation matrices are orthogonal (orthonormal) since $R^T=R^{-1}$
+    \item All rotation matrices are part of the set
+    $$
+    SO(3)=\{{R|R\in R^{3\times3}},R^TR=I,\quad \det{(R)}=1\}
+    $$
+    \item The following is quite useful if you are given a rotation and you want to find the corresponding rotation matrix. 
+    $$
+    R^b_a = [R^b_ae_1 \quad R^b_ae_2 \quad R^b_ae_3]
+    $$
+\end{itemize}
+
+\subsection{Euler Angles}
+Roll $\phi$, pitch $\theta$ and yaw $\psi$ are defined as rotation around the $x$, $y$ and $z$-axis respectively and have rotation matrices
+$$
+R_x(\phi)=
+\begin{bmatrix}
+1 & 0 & 0 \\ 0 & \cos\phi & -\sin\phi \\ 0 & \sin\phi & \cos\phi
+\end{bmatrix}
+,\;
+R_y(\theta)=
+\begin{bmatrix}
+\cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta
+\end{bmatrix}
+,\;
+R_z(\psi)=
+\begin{bmatrix}
+\cos\psi & -\sin\psi & 0 \\ \sin\psi & \cos\psi & 0 \\ 0 & 0 & 1
+\end{bmatrix}
+$$
+Any rotation $R$ can be represented with 3 Euler angles.
+These represent three principal rotation transformations. The convention is
+$$
+R=R_z\cdot R_y\cdot R_x
+$$
+
+% The 
+
+
+\subsection{Axis Angle}
+Rotation defined using an eigenvector $\vec v$ of the rotation and a parameter $\alpha$. The rotation matrix $R$ can be found as:
+$$
+R_{v,\alpha}=\cos\alpha \mathbb{I}+\sin(\alpha)(v)^\times+(1-\cos\alpha)vv^T
+\qquad v=R_{v,\alpha}v$$
+In other literature $\vec v$ gives the direction and the magnitude of the vector $||\vec v||$ gives the angle $\alpha$.
+
+
+
+\subsection{Quaternions}
+Using the angle $\alpha$ and direction $\vec v$ from the axis-angle representation, the Euler parameters $\eta$ and $\vec\varepsilon$ are given by:
+\begin{align}
+\eta&=\cos \frac{\alpha}{2}\\
+\vec{\varepsilon}&=\vec{v}\sin \frac{\alpha}{2},\quad \mathbb{q}=\begin{bmatrix}
+\eta \\ \vec{\varepsilon}
+\end{bmatrix}
+\end{align}
+where $\mathbb q$ is the quaternion.
+
+\textbf{Properties:}
+
+If $||v||=1$ then
+$$
+||q||^2=\eta^2+\vec{\varepsilon}^T\vec{\varepsilon}=\cos^2 \frac{\alpha}{2}+\sin^2 \frac{\alpha}{2}=1
+$$
+Using the Euler parameters $\eta$ and $\vec\varepsilon$, the Rotation matrix $R$ can be found as:
+$$
+R_{\eta,\vec{\varepsilon}}=\mathbb{I}+2\eta {\varepsilon}^\times+2{\varepsilon}^\times{\varepsilon}^\times
+$$

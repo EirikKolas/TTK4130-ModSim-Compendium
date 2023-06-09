@@ -1,0 +1,150 @@
+\section{Differential Algebraic Equations (DAEs)}
+
+Definition:
+An implicit set of equations $F\left(\dot{x},x,u\right)=0$ is DAE if $\frac{\partial F}{\partial x}$ is rank deficient along the trajectory $\dot{x},x,u,$ i.e., if
+$$
+    \frac{\partial F}{\partial\dot{\mathrm{states}}}=\left[\begin{matrix}\frac{\partial F}{\partial\dot{x}}&\frac{\partial F}{\partial\dot{z}}\\\end{matrix}\right]=\left[\begin{matrix}\frac{\partial F}{\partial\dot{x}}&0\\\end{matrix}\right]
+$$
+Where z is an algebraic state. More simply explained is that some states are not described using their time derivative, but rather an algebraic equation.
+
+\subsection{Fully Implicit vs. Semi-Explicit}
+DAEs can be written in fully implicit form as
+$$
+    F\left(\dot{x},x,z,u\right) = 0
+$$
+and in semi-explicit form as (usually good for expressing state-space)
+\begin{equation*}
+    \begin{split}
+        \dot x=f(x,z,u) &\rightarrow \text{ Almost ODE (except for z)}\\
+        0=g(x,z,u) &\rightarrow \text{ Algebraic equation}
+    \end{split}
+\end{equation*}
+
+A semi-explicit ODE can be converted to fully implicit like this:
+\begin{equation*}
+    \begin{split}
+        F(\dot{x},x,z,u)=
+        \begin{bmatrix}
+        \dot{x}-f(x,z,u) \\ g(x,z,u)
+        \end{bmatrix}
+        =0
+    \end{split}
+\end{equation*}
+And from fully implicit to semi-explicit like this:
+\begin{equation*}
+    \begin{split}
+        \dot x &= v \\
+        0 &= F(v,z,x,u)
+    \end{split} 
+\end{equation*}
+
+\subsection{Well defined DAEs}
+
+$F(\dot x, x, u)$ is well defined if there is a function $\dot{x}=f(x,u)$ such that\\ $F(f(x,u),u)=0$.
+
+% \subsection{Easy and hard DAEs}
+% For \textbf{semi-explicit} notation:
+% \begin{itemize}
+%     \item if $g$ delivers $z$ we can find $\dot x$ and the DAE is easy
+%     \item $\Rightarrow$ $\frac{\partial g}{\partial z}$ is full rank 
+%     \item $\Rightarrow$ the DAE is of index 1
+% \end{itemize}
+% then the DAE is easy.
+
+% For \textbf{fully implicit} notation:
+% \begin{itemize}
+%     \item if $F$ delivers $\dot x$ and $z$ simultaneously
+%     \item $\Rightarrow$
+%     $[\frac{\partial F}{\partial \dot{x}} \: \: \frac{\partial F}{\partial z} ]$ is full rank. 
+%     \item $\Rightarrow$ it is index 1
+%     \item $\Rightarrow$ the Implicit Function Theorem holds for $F$ 
+% \end{itemize}
+% then the DAE is easy.
+
+% Hard DAEs do not "readily" deliver $\dot x$ and $z$.
+% But they may nonetheless deliver well-defined trajectories for $x$ and $z$.
+
+\subsection{Differential index}
+A DAE's differential index is the number of $\frac{d}{dt}$s needed to turn it into an ODE.
+
+\subsubsection{Index 1 DAEs}
+A DAE is of index 1 if one of the below are fulfilled.
+\begin{itemize}
+    \item $g$ delivers $z$. I.e. $g(x,z,u)=0$ can be solved for $z$.
+    \item $\frac{\partial g}{\partial z}$ is full rank
+    \item $F$ delivers $\dot x$ and $z$ simultaneously
+    \item 
+    $
+    \begin{bmatrix}
+        \frac{\partial F}{\partial \dot{x}} & \frac{\partial F}{\partial z}
+    \end{bmatrix}
+    $ 
+    is full rank. 
+        
+    \item The implicit function theorem holds for $F$ (See \autoref{section:implicit_function_theorem} on page \pageref{section:implicit_function_theorem}
+\end{itemize}
+A DAE of index 1 is said to be easy while higher index DAEs are hard.
+Hard DAEs do not ”readily” deliver $\dot x$ and $z$. But they may nonetheless deliver well-defined trajectories for $x$ and $z$.
+
+\subsubsection{Index reduction}
+Transform DAE of index $n$ to DAE of index $1$ by applying $\frac{d^{n-1}}{dt^{n-1}}$ to the algebraic equations.
+
+\begin{equation}\label{eq:index_reduction}
+    \begin{aligned}
+        \frac{d}{dt}g(x,z,u)
+        &=\frac{\partial g}{\partial{x}}\dot x
+        +\frac{\partial g}{\partial{z}}\dot z 
+        +\frac{\partial g}{\partial{u}}\dot u =0\\\\
+        \dot z &=-\frac{\partial g}{\partial{z}}^{-1}\left( \frac{\partial g}{\partial{x}}f+ \frac{\partial g}{\partial{u}}\dot u \right)
+    \end{aligned}
+\end{equation}
+\begin{enumerate}
+    \item Check if DAE is of index 1. If not, ...
+    %\item Identify a subset that can be solved for $z$.\\
+    %	$g(x,z,u)$ can be divided into equations that give some $z$ and some that are useless 
+    \item Apply $\frac{d}{dt}$ using \autoref{eq:index_reduction}.
+    \item Substitute $\dot x$ with $f(x,z,u)$ $\Rightarrow$ This leads to new algebraic equations.
+    \item Go to step 1.
+\end{enumerate}
+
+%Note: Some exam sets just look for using derivatives on the constraint function until one of the derivatives in $\Dot{x} = f(x,z,u)$ appears such that $z$ can be expressed in the constraint.
+
+\subsection{Consistency Conditions}
+The reduction of the index of a DAE requires one to collect a set of consistency conditions that need to be enforced in order for the resulting index-1 DAE to match the original one. 
+
+When performing the index reduction, \textbf{collect all the algebraic equations on which a time differentiation is performed}, and add them to the list of consistency conditions.
+
+For example, in the constrained Euler-Lagrange framework, when we get $\ddot c = 0$ in the final state-space formulation, we also need to enforce the consistency conditions $c=0$ and $\dot c = 0$. An practice one can instead use Baumgarte stabilization. (See \autoref{section:Baumgarte} on page \pageref{section:Baumgarte})
+
+\subsection{Tikhonovs Theorem}
+Let
+\begin{equation*}
+    \begin{split}
+    \dot x &= f(x,z,u) \\
+    \varepsilon\dot z &= g(x,z) 
+    \end{split}
+\end{equation*}
+be a set of ODEs.
+If the dynamics $\dot z = g(x, z) $ are stable for all $x$ and $\frac{\partial g}{\partial z}$ is full rank everywhere
+$\rightarrow$ $g$ can be used to find $z$
+
+Then 
+$$
+\lim_{\varepsilon\rightarrow0}(\text{solution of ODE}) = (\text{solution of DAE})
+$$
+almost everywhere
+
+The theorem is used to simplify a system by removing the fast dynamics.
+
+\subsection{Implicit Function Theorem}\label{section:implicit_function_theorem}
+If $F(x,y)$ is smooth and $\frac{\partial}{\partial y}F(x,y)$ is full rank then there exists a function $y=f(x)$ such that $F(x,f(x))=0$ for all $x$.
+
+In other words, the system of implicit equations is solvable for $x$ (at least numerically) when its Jacobian Matrix has full rank and therby explicit.
+
+If this does not hold, the system is a DAE but can be solved even so.
+
+%The theorem can be used to determine if a differential equation is explicit or implicit. Because if the implicit function theorem holds, then
+%$$
+%\frac{\partial }{\partial \dot{x}}F(\dot{x},x,u) %\Longrightarrow f(x,u)=\dot{x}
+%$$
+

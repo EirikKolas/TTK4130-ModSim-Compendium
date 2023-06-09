@@ -1,0 +1,23 @@
+\section{Ordinary Differential Equations (ODEs)}
+
+\subsection{Solution of ODEs}
+Chapter 1.8 in lecture notes.
+\begin{equation}
+\label{eq:ODE}
+    \dot{x} = f(x)
+\end{equation}
+\subsubsection{Theorem 1}
+
+Consider the ODE in equation \ref{eq:ODE}. The solution to this equation exists and is unique if equation \ref{eq:strong_solution_condition} holds for some constant $c$. This is known as Lipschitz continuity. 
+
+\begin{equation}
+\label{eq:strong_solution_condition}
+    ||f(x)-f(y)|| \leq c||x-y||, \forall x, y
+\end{equation}
+
+Intuitively this means that the derivative of the function is bounded, e.g. the function $f$ is limited in how fast it can change.
+\subsubsection{Theorem 2}
+Theorem 2 has weaker requirements, and thus also a weaker "result" (ie. exists vs exists on some interval). 
+
+Given equation \ref{eq:ODE}, if $\frac{\partial f}{\partial x}$ exists and is continuous then the solution to equation \ref{eq:ODE} exists and is continuous on some time interval. 
+
